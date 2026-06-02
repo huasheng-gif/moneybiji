@@ -2,6 +2,8 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { createRouter, createWebHistory } from 'vue-router'
 import App from './App.vue'
+import { useFinanceStore } from './stores/finance'
+import './assets/main.css'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -16,7 +18,16 @@ const router = createRouter({
   ]
 })
 
+const pinia = createPinia()
+
+router.beforeEach((to) => {
+  const store = useFinanceStore()
+  if (store.isNewUser && to.path !== '/onboarding') {
+    return '/onboarding'
+  }
+})
+
 const app = createApp(App)
-app.use(createPinia())
+app.use(pinia)
 app.use(router)
 app.mount('#app')
